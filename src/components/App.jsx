@@ -1,30 +1,54 @@
 import { Component } from 'react';
 import { nanoid } from 'nanoid';
 
+import css from './App.module.css';
+
 import { Form } from './Form/Form';
-import { Contacts } from './Contacts/Contacts';
+import { ContactsList } from './ContactsList/ContactsList';
+import { Filter } from './Filter/Filter';
 
 export class App extends Component {
   state = {
-    contacts: [],
+    contacts: [{id: 'id-1', name: 'Rosie Simpson', number: '459-12-56'},
+    {id: 'id-2', name: 'Hermione Kline', number: '443-89-12'},
+    {id: 'id-3', name: 'Eden Clements', number: '645-17-79'},
+    {id: 'id-4', name: 'Annie Copeland', number: '227-91-26'},],
     filter: '',
-    name: '',
-    number: '',
+  };
+
+  checkingForMatches = (value) => {
+    return (
+      (this.state.contacts).some((el) => (el.name === value))
+    )
+  };
+
+  deleteContact = ({target: {id}}) => {
+    const index = this.state.contacts.findIndex((el) => el.id === id);
+  
+    this.setState((state) => {
+      const arr = [...state.contacts];
+      arr.splice(index, 1);
+      return {
+        contacts: arr,
+      };
+    });
   };
 
   handleSubmitForm = (evt) => {
     evt.preventDefault();
     const { target: { name, number } } = evt;
+    if (this.checkingForMatches(name.value)) {
+      alert(`${name.value} is already in contacts`);
+      return
+    };
     this.setState((state) => {
       return {
         contacts: (
           [...state.contacts, {
+            id: nanoid(),
             name: name.value,
             number: number.value,
-            id: nanoid(),
           }]),
-        name: '',
-        number: '',
       };
     });
   };
@@ -36,24 +60,22 @@ export class App extends Component {
     })
   };
 
-  handleChangeFilter = (evt) => {
-
-  };
-
   render() {
     return (
-      <>
-        <Form
-          submit={this.handleSubmitForm}
+      <div>
+        <h1 className={css.title}>Phonebook</h1>
+        <Form submit={this.handleSubmitForm}/>
+        <h2 className={css.title}>Contacts</h2>
+        <Filter
+          filter={this.state.filter}
           change={this.handleChangeInput}
-          state={this.state}
         />
-        <Contacts
-          change={this.handleChangeInput}
+        <ContactsList
           contacts={this.state.contacts}
           filter={this.state.filter}
+          deleteContact={this.deleteContact}
         />
-      </>
+      </div>
     );
   };
 };
