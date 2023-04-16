@@ -4,13 +4,11 @@ import { Contact } from './Contact/Contact';
 
 import css from './ContactsList.module.css';
 
-export const ContactsList = ({ contacts, filter, deleteContact }) => {
+export const ContactsList = ({ contacts, deleteContact }) => {
     return (
         <div className={css.wrapper}>
             <ul>
-                {contacts.filter((el) => (
-                    el.name.toLowerCase().includes(filter.toLowerCase())
-                )).map((el) => (
+                {contacts.map((el) => (
                     <Contact
                         key={el.id}
                         name={el.name}
@@ -30,6 +28,5 @@ ContactsList.propTypes = {
         name: PropTypes.string.isRequired,
         number: PropTypes.string.isRequired,
     })),
-    filter: PropTypes.string.isRequired,
     deleteContact: PropTypes.func.isRequired,
 }

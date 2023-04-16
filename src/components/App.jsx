@@ -18,7 +18,7 @@ export class App extends Component {
 
   checkingForMatches = (value) => {
     return (
-      (this.state.contacts).some((el) => (el.name === value))
+      (this.state.contacts).some((el) => (el.name.toLowerCase() === value.toLowerCase()))
     )
   };
 
@@ -42,14 +42,17 @@ export class App extends Component {
       return
     };
     this.setState((state) => {
-      return {
+      const newContacts = {
         contacts: (
           [...state.contacts, {
             id: nanoid(),
             name: name.value,
             number: number.value,
-          }]),
+          }])
       };
+      name.value = '';
+      number.value = '';
+      return newContacts;
     });
   };
 
@@ -71,8 +74,7 @@ export class App extends Component {
           change={this.handleChangeInput}
         />
         <ContactsList
-          contacts={this.state.contacts}
-          filter={this.state.filter}
+          contacts={this.state.contacts.filter((el) => (el.name.toLowerCase().includes(this.state.filter.toLowerCase())))}
           deleteContact={this.deleteContact}
         />
       </div>
